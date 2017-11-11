@@ -14,7 +14,7 @@
 ## Usage
 
 ``` bash
-$ git clone 
+$ git clone https://github.com/Meuss/minesweeper.git
 $ npm install
 $ npm run dev
 ```
