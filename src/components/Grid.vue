@@ -1,10 +1,11 @@
 <template>
-  <div class="grid">
-    <div class="row" v-for="(row, indexY) in rows">
-      <div class="col" v-for="(col, indexX) in cols">
-        <cell :x="indexX" :y="indexY" :mined="checkIfMined(indexX,indexY)" :gameSize="cols"></cell>
+  <div class="wrapper">
+    <div class="grid">
+      <div v-for="(cell, index) in totalCells">
+        <cell :index="index" :number="calculateNeighbors(index)" :mined="checkIfMined(index)" :gameStarted="gameStarted" :gameEnded="gameEnded"></cell>
       </div>
     </div>
+    <button v-show="gameEnded" @click="restart">Restart</button>
   </div>
 </template>
 
@@ -16,56 +17,89 @@ export default {
   name: "Grid",
   data() {
     return {
-      cols: 10,
-      rows: 10,
-      totalMines: 30,
-      minePositions: []
+      totalCells: 676,
+      totalMines: 200,
+      minePositions: [],
+      gameStarted: false,
+      gameEnded: false
     };
   },
-  props: ["gameStarted"],
-  created() {
-    bus.$on("startGame", this.setMines);
+  beforeMount() {
+    this.setMines();
+  },
+  mounted() {
+    bus.$on("startGame", () => {
+      console.log("started in grid");
+      this.gameStarted = true;
+      this.gameEnded = false;
+      // this.setMines();
+    });
+    bus.$on("endGame", () => {
+      console.log("ended in grid");
+      this.gameStarted = false;
+      this.gameEnded = true;
+    });
   },
   methods: {
     setMines() {
       this.minePositions = [];
       for (var i = 0; i < this.totalMines; i++) {
         // still need to make sure minePositions doesn't have duplicates
-        this.minePositions.push(this.generateMinePos(0, 10));
+        this.minePositions.push(this.generateMinePos(0, this.totalCells));
       }
+      // console.log(this.minePositions.length);
     },
     generateMinePos(min, max) {
-      const arrayPos = [];
       const x = Math.floor(max - Math.random() * (max - min));
-      const y = Math.floor(max - Math.random() * (max - min));
-      arrayPos.push(x, y);
-      return arrayPos;
+      return x;
     },
-    checkIfMined(x,y) {
+    checkIfMined(x) {
       let mines = this.minePositions;
-      let thisPos = [x,y];
-      mines = JSON.stringify(mines);
-      thisPos = JSON.stringify(thisPos);
-      const yes = mines.indexOf(thisPos);
-      if(yes != -1){
+      // console.log(mines);
+      if(mines.includes(x)) {
         return true;
       } else {
         return false;
       }
+    },
+    calculateNeighbors(x) {
+      // still need to remove corners
+      // top side
+      if(x < 26) {
+        const neighbors = [x-1, x+1, x+25, x+26, x+27];
+        const filteredN = neighbors.filter(function(x){ return x > 0 });
+        return filteredN;
+      }
+      // left side
+      else if((x != 0) && (x % 26 === 0)) {
+        const neighbors = [x-26, x-25, x+1, x+26, x+27];
+        const filteredN = neighbors.filter(function(x){ return x > 0 });
+        return filteredN;
+      }
+      // right side
+      else if((x != 25) && (x % 26 === 25)) {
+        const neighbors = [x-27, x-26, x-1, x+25, x+26];
+        const filteredN = neighbors.filter(function(x){ return x > 0 });
+        return filteredN;
+      }
+      // bottom side
+      else if((x > 650) && (x < 675)) {
+        const neighbors = [x-27, x-26, x-25, x-1, x+1];
+        const filteredN = neighbors.filter(function(x){ return x > 0 });
+        return filteredN;
+      // all other values
+      } else {
+        const neighbors = [x-27, x-26, x-25, x-1, x+1, x+25, x+26, x+27];
+        const filteredN = neighbors.filter(function(x){ return x > 0 });
+        return filteredN;
+      }
+    },
+    restart() {
+      this.gameStarted = false;
+      this.gameEnded = false;
+      this.setMines();
+      bus.$emit("restartGame");
     }
-    // isArrayInArray(arrayToSearch, arrayToFind) {
-    //   for (let i = 0; i < arrayToSearch.length; i++) {
-    //     if (arrayToSearch[i][0] === arrayToFind[0] && arrayToSearch[i][1] === arrayToFind[1]) {
-    //       return true;
-    //     }
-    //   }
-    //   return false;
-    // },
-    // pushArray(array) {
-    //   if (!isArrayInArray(arrayArr, array)) {
-    //     arrayArr.push(array);
-    //   }
-    // }
   },
   components: {
     cell: Cell
@@ -75,8 +109,12 @@ export default {
 
 
 <style lang="scss" scoped>
-.row {
-  display: flex;
-  justify-content: center;
+.grid {
+  display: grid;
+  grid-template-rows: repeat(26, 1fr);
+  grid-template-columns: repeat(26, 1fr);
+  grid-gap: 1px;
+  background-color: black;
+  padding: 2px;
 }
 </style>

@@ -1,8 +1,7 @@
 <template>
   <div id="app">
     <h1>{{ title }}</h1>
-    <grid v-bind:gameStarted="gameStarted"></grid>
-    <button @click="startGame">Start game</button>
+    <grid></grid>
   </div>
 </template>
 
@@ -13,45 +12,39 @@ export default {
   name: "app",
   data() {
     return {
-      title: "Minesweeper",
-      gameStarted: false
+      title: "Minesweeper"
     };
   },
   components: {
     grid: Grid
-  },
-  methods: {
-    startGame() {
-      bus.$emit("startGame");
-      this.gameStarted = !this.gameStarted;
-    }
   }
 };
 </script>
 
 <style lang="scss">
+html {
+}
+body {
+  height: 100vh;
+  margin: 0px;
+  // background: linear-gradient(to bottom, #F0CB35, #C02425);
+}
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }
 
 h1,
 h2 {
   font-weight: normal;
-}
-button {
-  padding: 10px;
-  background-color: white;
-  margin-top: 20px;
-  border: 1px solid #2c3e50;
-  outline: none;
-}
-a,
-button {
-  color: #42b983;
+  margin-top: 0px;
 }
 </style>

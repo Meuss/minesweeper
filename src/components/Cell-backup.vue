@@ -9,11 +9,10 @@ export default {
   data: function() {
     return initialState();
   },
-  props: ["index", "number", "mined", "gameStarted", "gameEnded"],
+  props: ["x", "y", "mined", "gameSize", "gameStarted", "gameEnded"],
   methods: {
     handleReveal() {
       // if game is started
-      console.log(this.index);
       if (this.gameStarted) {
         this.reveal();
       } else if (!this.gameStarted && !this.gameEnded) {
@@ -61,11 +60,12 @@ function initialState() {
 }
 </script>
 
+
 <style lang="scss" scoped>
 .cell {
-  width: 25px;
-  height: 25px;
-  // border: 1px solid black;
+  width: 40px;
+  height: 40px;
+  border: 1px solid black;
   background-color: white;
 }
 .revealed {
