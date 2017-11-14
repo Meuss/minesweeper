@@ -44,7 +44,7 @@ export default {
     });
   },
   watch: {
-    gameEnded: function(){
+    gameEnded: function() {
       if (this.gameEnded == true) {
         this.revealed = true;
       } else {

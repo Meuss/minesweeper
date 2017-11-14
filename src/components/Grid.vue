@@ -56,7 +56,7 @@ export default {
     checkIfMined(x) {
       let mines = this.minePositions;
       // console.log(mines);
-      if(mines.includes(x)) {
+      if (mines.includes(x)) {
         return true;
       } else {
         return false;
@@ -65,32 +65,48 @@ export default {
     calculateNeighbors(x) {
       // still need to remove corners
       // top side
-      if(x < 26) {
-        const neighbors = [x-1, x+1, x+25, x+26, x+27];
-        const filteredN = neighbors.filter(function(x){ return x > 0 });
+      if (x < 26) {
+        const neighbors = [x - 1, x + 1, x + 25, x + 26, x + 27];
+        const filteredN = neighbors.filter(function(x) {
+          return x > 0;
+        });
         return filteredN;
-      }
-      // left side
-      else if((x != 0) && (x % 26 === 0)) {
-        const neighbors = [x-26, x-25, x+1, x+26, x+27];
-        const filteredN = neighbors.filter(function(x){ return x > 0 });
+      } else if (x != 0 && x % 26 === 0) {
+        // left side
+        const neighbors = [x - 26, x - 25, x + 1, x + 26, x + 27];
+        const filteredN = neighbors.filter(function(x) {
+          return x > 0;
+        });
         return filteredN;
-      }
-      // right side
-      else if((x != 25) && (x % 26 === 25)) {
-        const neighbors = [x-27, x-26, x-1, x+25, x+26];
-        const filteredN = neighbors.filter(function(x){ return x > 0 });
+      } else if (x != 25 && x % 26 === 25) {
+        // right side
+        const neighbors = [x - 27, x - 26, x - 1, x + 25, x + 26];
+        const filteredN = neighbors.filter(function(x) {
+          return x > 0;
+        });
         return filteredN;
-      }
-      // bottom side
-      else if((x > 650) && (x < 675)) {
-        const neighbors = [x-27, x-26, x-25, x-1, x+1];
-        const filteredN = neighbors.filter(function(x){ return x > 0 });
+      } else if (x > 650 && x < 675) {
+        // bottom side
+        const neighbors = [x - 27, x - 26, x - 25, x - 1, x + 1];
+        const filteredN = neighbors.filter(function(x) {
+          return x > 0;
+        });
         return filteredN;
-      // all other values
+        // all other values
       } else {
-        const neighbors = [x-27, x-26, x-25, x-1, x+1, x+25, x+26, x+27];
-        const filteredN = neighbors.filter(function(x){ return x > 0 });
+        const neighbors = [
+          x - 27,
+          x - 26,
+          x - 25,
+          x - 1,
+          x + 1,
+          x + 25,
+          x + 26,
+          x + 27
+        ];
+        const filteredN = neighbors.filter(function(x) {
+          return x > 0;
+        });
         return filteredN;
       }
     },
