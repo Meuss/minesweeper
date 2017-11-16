@@ -2,7 +2,7 @@
   <div class="wrapper">
     <div class="grid">
       <div v-for="(cell, index) in totalCells">
-        <cell :index="index" :number="calculateNeighbors(index)" :mined="checkIfMined(index)" :gameStarted="gameStarted" :gameEnded="gameEnded"></cell>
+        <cell :index="index" :neighbors="calculateNeighbors(index)" :number="calculateNumber(index)" :mined="checkIfMined(index)" :gameStarted="gameStarted" :gameEnded="gameEnded"></cell>
       </div>
     </div>
     <button v-show="gameEnded" @click="restart">Restart</button>
@@ -18,7 +18,7 @@ export default {
   data() {
     return {
       totalCells: 676,
-      totalMines: 200,
+      totalMines: 10,
       minePositions: [],
       gameStarted: false,
       gameEnded: false
@@ -29,25 +29,35 @@ export default {
   },
   mounted() {
     bus.$on("startGame", () => {
-      console.log("started in grid");
       this.gameStarted = true;
       this.gameEnded = false;
-      // this.setMines();
     });
     bus.$on("endGame", () => {
-      console.log("ended in grid");
       this.gameStarted = false;
       this.gameEnded = true;
+    });
+    bus.$on("floodfillToGrid", function(cells){
+      bus.$emit('floodfillCells', cells);
     });
   },
   methods: {
     setMines() {
       this.minePositions = [];
-      for (var i = 0; i < this.totalMines; i++) {
-        // still need to make sure minePositions doesn't have duplicates
-        this.minePositions.push(this.generateMinePos(0, this.totalCells));
+      let possibilities = [];
+      for (var i = 1; i < this.totalCells; i++) {
+        possibilities.push(i);
       }
-      // console.log(this.minePositions.length);
+      for (var i = 0; i < this.totalMines; i++) {
+        const choice = this.generateMinePos(0, this.totalCells);
+        // removing duplicates
+        if(possibilities.includes(choice)) {
+          possibilities.splice(choice, 1);
+          this.minePositions.push(choice);
+        } else {
+          // modify this. For now this means one less mine.
+        }
+      }
+      console.log(this.minePositions.length + " mines");
     },
     generateMinePos(min, max) {
       const x = Math.floor(max - Math.random() * (max - min));
@@ -63,52 +73,57 @@ export default {
       }
     },
     calculateNeighbors(x) {
-      // still need to remove corners
-      // top side
-      if (x < 26) {
-        const neighbors = [x - 1, x + 1, x + 25, x + 26, x + 27];
-        const filteredN = neighbors.filter(function(x) {
-          return x > 0;
-        });
-        return filteredN;
-      } else if (x != 0 && x % 26 === 0) {
+      let neighbors = [];
+      const a = Math.sqrt(this.totalCells);
+
+      if (x === 0) {
+        // top left corner
+        neighbors.push(x + 1, x + a, x + a + 1);
+      } else if (x === a - 1) {
+        // top right corner
+        neighbors.push(x - 1, x + a - 1, x + a);
+      } else if (x === this.totalCells - a) {
+        // bottom left corner
+        neighbors.push(x - a, x - (a - 1), x + 1);
+      } else if (x === this.totalCells - 1) {
+        // bottom right corner
+        neighbors.push(x - (a + 1), x - a, x - 1);
+      } else if (x != 0 && x != a - 1 && x < a) {
+        // top side
+        neighbors.push(x - 1, x + 1, x + (a - 1), x + a, x + a + 1);
+      } else if (x != 0 && x % a === 0) {
         // left side
-        const neighbors = [x - 26, x - 25, x + 1, x + 26, x + 27];
-        const filteredN = neighbors.filter(function(x) {
-          return x > 0;
-        });
-        return filteredN;
-      } else if (x != 25 && x % 26 === 25) {
+        neighbors.push(x - a, x - (a - 1), x + 1, x + a, x + a + 1);
+      } else if (x != a - 1 && x % a === a - 1) {
         // right side
-        const neighbors = [x - 27, x - 26, x - 1, x + 25, x + 26];
-        const filteredN = neighbors.filter(function(x) {
-          return x > 0;
-        });
-        return filteredN;
-      } else if (x > 650 && x < 675) {
+        neighbors.push(x - (a + 1), x - a, x - 1, x + (a - 1), x + a);
+      } else if (x > this.totalCells - a && x <= this.totalCells - 1) {
         // bottom side
-        const neighbors = [x - 27, x - 26, x - 25, x - 1, x + 1];
-        const filteredN = neighbors.filter(function(x) {
-          return x > 0;
-        });
-        return filteredN;
-        // all other values
+        neighbors.push(x - (a + 1), x - a, x - (a - 1), x - 1, x + 1);
       } else {
-        const neighbors = [
-          x - 27,
-          x - 26,
-          x - 25,
+        // all other values
+        neighbors.push(
+          x - (a + 1),
+          x - a,
+          x - (a - 1),
           x - 1,
           x + 1,
-          x + 25,
-          x + 26,
-          x + 27
-        ];
-        const filteredN = neighbors.filter(function(x) {
-          return x > 0;
-        });
-        return filteredN;
+          x + (a - 1),
+          x + a,
+          x + a + 1
+        );
       }
+      const filteredN = neighbors.filter(function(x) {
+        return x >= 0;
+      });
+      return filteredN;
+    },
+    calculateNumber(x) {
+      const theNeighbors = this.calculateNeighbors(x);
+      let mines = this.minePositions;
+      const intersection = mines.filter(element => theNeighbors.includes(element));
+      const neighbMines = [...new Set(intersection)];
+      return neighbMines;
     },
     restart() {
       this.gameStarted = false;

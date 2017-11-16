@@ -1,5 +1,7 @@
 <template>
-  <div class="cell" :class="{ mined: mined, flagged: flagged, revealed: revealed }" @click.prevent="handleReveal()"></div>
+  <div class="cell" :class="{ mined: mined, flagged: flagged, revealed: revealed }" @click.prevent="handleReveal()">
+    <span v-if="number.length > 0 && !mined && revealed">{{number.length}}</span>
+  </div>
 </template>
 
 <script>
@@ -9,7 +11,7 @@ export default {
   data: function() {
     return initialState();
   },
-  props: ["index", "number", "mined", "gameStarted", "gameEnded"],
+  props: ["index", "neighbors", "number", "mined", "gameStarted", "gameEnded"],
   methods: {
     handleReveal() {
       // if game is started
@@ -29,6 +31,12 @@ export default {
       this.revealed = true;
       if (this.mined) {
         bus.$emit("endGame");
+      } else if (this.number.length === 0) {
+        console.log("flood fill time!");
+        bus.$emit("floodfillToGrid", this.neighbors);
+        // for each neighbor,
+        // if neighbor is not mined and it is not revealed
+        // reveal it
       }
     },
     reset() {
@@ -41,6 +49,10 @@ export default {
   mounted() {
     bus.$on("restartGame", () => {
       this.reset();
+    });
+    bus.$on("floodfillCells", function(cells) {
+      // uh oh... i think i need learn about vuex
+      // console.log('floodfill back!!'+ cells);
     });
   },
   watch: {

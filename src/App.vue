@@ -12,7 +12,7 @@ export default {
   name: "app",
   data() {
     return {
-      title: "Minesweeper"
+      title: "Minesweeper with Vue.js"
     };
   },
   components: {
