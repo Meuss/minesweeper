@@ -1,12 +1,12 @@
-# minesweeper
+# Minesweeper
 
-<p align="center"><a href="https://vuejs.org" target="_blank"><img width="100"src="https://vuejs.org/images/logo.png"></a></p>
+> Learning some Vue.js while having some fun. 💣  💥
 
-> learning some Vue.js while having some fun.
+<a href="https://vuejs.org" target="_blank"><img width="50" src="https://vuejs.org/images/logo.png" /></a>
 
 ## Todos
 
-:shit: Just realized I should learn me some Vuex to make this easier..
+💩 Just realized I should learn me some Vuex to make this easier..
 
 - ~~detect surrounding bombs (numbering functionality)~~
 - ~~end game functionality~~
