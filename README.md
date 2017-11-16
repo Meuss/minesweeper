@@ -4,12 +4,17 @@
 
 ## Todos
 
-- detect surrounding bombs (numbering functionality)
-- end game functionality
-- flood fill functionality (when cell is 0)
+:shit: Just realized I should learn me some Vuex to make this easier..
+
+- ~~detect surrounding bombs (numbering functionality)~~
+- ~~end game functionality~~
+- flood fill functionality ==> NEXT STEP
 - flagging cells functionality
+- add vue transitions
 - add timer
-- maybe highscores?
+- style up dat shit
+- highscores
+- let user change the starting values
 
 ## Usage
 
