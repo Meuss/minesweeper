@@ -1,6 +1,8 @@
 # minesweeper
 
-> with Vue.js + webpack
+<p align="center"><a href="https://vuejs.org" target="_blank"><img width="100"src="https://vuejs.org/images/logo.png"></a></p>
+
+> learning some Vue.js while having some fun.
 
 ## Todos
 
