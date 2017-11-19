@@ -2,7 +2,7 @@
   <div class="wrapper">
     <div class="grid">
       <div v-for="(cell, index) in totalCells">
-        <cell :index="index" :neighbors="calculateNeighbors(index)" :number="calculateNumber(index)" :mined="checkIfMined(index)" :gameStarted="gameStarted" :gameEnded="gameEnded"></cell>
+        <cell :index="index" :neighbors="calculateNeighbors(index)" :number="calculateNumber(index)" :mined="checkIfMined(index)"></cell>
       </div>
     </div>
     <button v-show="gameEnded" @click="restart">Restart</button>
@@ -18,26 +18,33 @@ export default {
   data() {
     return {
       totalCells: 676,
-      totalMines: 10,
-      minePositions: [],
-      gameStarted: false,
-      gameEnded: false
+      totalMines: 150,
+      minePositions: []
     };
+  },
+  computed: {
+    gameStarted() {
+      return this.$store.state.gameStarted;
+    },
+    gameEnded() {
+      return this.$store.state.gameEnded;
+    }
   },
   beforeMount() {
     this.setMines();
   },
   mounted() {
-    bus.$on("startGame", () => {
-      this.gameStarted = true;
-      this.gameEnded = false;
-    });
-    bus.$on("endGame", () => {
-      this.gameStarted = false;
-      this.gameEnded = true;
-    });
-    bus.$on("floodfillToGrid", function(cells){
-      bus.$emit('floodfillCells', cells);
+    let mines = this.minePositions;
+    bus.$on("floodfillToGrid", function(cells) {
+      let cellsFlood = [];
+      // bus.$emit("floodfillCells", cells);
+      cells.forEach(function(index) {
+        if (mines.includes(index)) {
+        } else {
+          cellsFlood.push(index);
+        }
+      });
+      bus.$emit("floodfillToCells", cellsFlood);
     });
   },
   methods: {
@@ -50,7 +57,7 @@ export default {
       for (var i = 0; i < this.totalMines; i++) {
         const choice = this.generateMinePos(0, this.totalCells);
         // removing duplicates
-        if(possibilities.includes(choice)) {
+        if (possibilities.includes(choice)) {
           possibilities.splice(choice, 1);
           this.minePositions.push(choice);
         } else {
@@ -65,7 +72,6 @@ export default {
     },
     checkIfMined(x) {
       let mines = this.minePositions;
-      // console.log(mines);
       if (mines.includes(x)) {
         return true;
       } else {
@@ -121,15 +127,15 @@ export default {
     calculateNumber(x) {
       const theNeighbors = this.calculateNeighbors(x);
       let mines = this.minePositions;
-      const intersection = mines.filter(element => theNeighbors.includes(element));
+      const intersection = mines.filter(element =>
+        theNeighbors.includes(element)
+      );
       const neighbMines = [...new Set(intersection)];
       return neighbMines;
     },
     restart() {
-      this.gameStarted = false;
-      this.gameEnded = false;
+      this.$store.commit("reset");
       this.setMines();
-      bus.$emit("restartGame");
     }
   },
   components: {
