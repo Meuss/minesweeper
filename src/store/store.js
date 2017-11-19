@@ -7,25 +7,11 @@ export const store = new Vuex.Store({
   strict: true,
   state: {
     gameStarted: false,
-    gameEnded: false
+    gameEnded: false,
+    minesleft: 0
   },
-  getters: {
-    // saleProducts: (state) => {
-    //   var saleProducts = state.products.map( product => {
-    //     return {
-    //       name:  '**' + product.name + '**',
-    //       price: product.price / 2,
-    //       };
-    //     });
-    //   return saleProducts;
-    // }
-  },
+  getters: {},
   mutations: {
-    // reducePrice: (state, payload) => {
-    //   state.products.forEach( product => {
-    //     product.price -= payload
-    //   });
-    // }
     reset(state) {
       state.gameStarted = false;
       state.gameEnded = false;
@@ -37,13 +23,23 @@ export const store = new Vuex.Store({
     end(state) {
       state.gameStarted = false;
       state.gameEnded = true;
+    },
+    setMinesLeft(state, amount) {
+      state.minesleft = amount;
+    },
+    reduceMinesleft: (state, amount) => {
+      state.minesleft -= amount;
+    },
+    addMinesleft: (state, amount) => {
+      state.minesleft += amount;
     }
   },
   actions: {
-    // reducePrice: (context, payload) => {
-    //   setTimeout(function(){ // reach out for data
-    //     context.commit('reducePrice', payload);
-    //   }, 2000);
-    // }
+    reduceMinesleft: (context, amount) => {
+      context.commit('reduceMinesleft', amount);
+    },
+    addMinesleft: (context, amount) => {
+      context.commit('addMinesleft', amount);
+    }
   }
 });

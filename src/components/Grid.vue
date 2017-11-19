@@ -5,6 +5,7 @@
         <cell :index="index" :neighbors="calculateNeighbors(index)" :number="calculateNumber(index)" :mined="checkIfMined(index)"></cell>
       </div>
     </div>
+    <div class="mines-left">{{minesleft}} mines left!</div>
     <button v-show="gameEnded" @click="restart">Restart</button>
   </div>
 </template>
@@ -18,7 +19,7 @@ export default {
   data() {
     return {
       totalCells: 676,
-      totalMines: 150,
+      totalMines: 50,
       minePositions: []
     };
   },
@@ -28,6 +29,9 @@ export default {
     },
     gameEnded() {
       return this.$store.state.gameEnded;
+    },
+    minesleft() {
+      return this.$store.state.minesleft;
     }
   },
   beforeMount() {
@@ -61,10 +65,10 @@ export default {
           possibilities.splice(choice, 1);
           this.minePositions.push(choice);
         } else {
-          // modify this. For now this means one less mine.
+          // refactor this. For now this means one less mine.
         }
       }
-      console.log(this.minePositions.length + " mines");
+      this.$store.commit("setMinesLeft", this.minePositions.length);
     },
     generateMinePos(min, max) {
       const x = Math.floor(max - Math.random() * (max - min));
