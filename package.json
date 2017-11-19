@@ -1,6 +1,6 @@
 {
   "name": "minesweeper",
-  "description": "A Vue.js project",
+  "description": "Minesweeper with Vue.js",
   "version": "1.0.0",
   "author": "Meuss <thomas.miller147@gmail.com>",
   "license": "MIT",
