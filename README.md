@@ -3,6 +3,9 @@
 
 > Learning some Vue.js while having some fun. 💣  💥
 
+# Bugs TODO
+
+- Floodfill function still buggy
 
 ## Usage
 
