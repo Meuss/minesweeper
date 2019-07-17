@@ -7,7 +7,7 @@
   "private": true,
   "homepage": "https://github.com/Meuss/minesweeper",
   "scripts": {
-    "deploy": "node ./node_modules/vue-gh-pages/index.js",
+    "deploy": "node ./node_modules/vue-gh-pages/index.js -p",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
