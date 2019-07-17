@@ -33,8 +33,6 @@ export default {
 </script>
 
 <style lang="scss">
-html {
-}
 body {
   height: 100vh;
   margin: 0px;
