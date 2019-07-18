@@ -6,6 +6,8 @@
 # Bugs TODO
 
 - Floodfill function still buggy
+- Correct the amount of mines
+- Give possibility of setting mines / grid size at start.
 
 ## Usage
 
