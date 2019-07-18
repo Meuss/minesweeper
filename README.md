@@ -7,7 +7,6 @@
 
 - Correct the amount of mines left!
 - Give possibility of setting mines / grid size at start.
-- Restart button
 - Victory animation or something
 
 ## Usage
