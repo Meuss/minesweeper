@@ -5,6 +5,7 @@
 
 # Bugs TODO
 
+- Restart not resetting correctly, page refresh works
 - Correct the amount of mines left!
 - Give possibility of setting mines / grid size at start.
 - Victory animation or something
